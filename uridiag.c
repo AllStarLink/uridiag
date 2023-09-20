@@ -1321,9 +1321,9 @@ int main(int argc, char **argv)
 		
 		tcgetattr(fileno(stdin), &t);
 		cfmakeraw(&t);
-		t.c_cc[VTIME] = 10;
-		t.c_cc[VMIN] = 0;
+		t.c_lflag &= ~ICANON;
 		tcsetattr(fileno(stdin), TCSANOW, &t);
+		fcntl(fileno(stdin), F_SETFL, fcntl(fileno(stdin), F_GETFL) | O_NONBLOCK);
 		for (;;) {
 			int c = getc(stdin);
 			if (c > 0) {
@@ -1333,6 +1333,10 @@ int main(int argc, char **argv)
 			printf("Level at %.1f Hz: %.1f mV (RMS) %.1f mV (P-P)\r\n", myfreq, lev,
 				   lev * 2.828);
 		}
+		tcgetattr(fileno(stdin), &t);
+		t.c_lflag &= ICANON;
+		tcsetattr(fileno(stdin), TCSANOW, &t);
+		fcntl(fileno(stdin), F_SETFL, fcntl(fileno(stdin), F_GETFL) & ~O_NONBLOCK);
 	}
 	
   exit:
