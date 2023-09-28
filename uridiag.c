@@ -1100,7 +1100,7 @@ static int eeprom_list_manufacturer(struct usb_dev_handle *usb_handle)
 	printf("Device id %04x\n", devproductid);
 	printf("EEPROM manufacturer data...\n");
 	
-	if ((sbuf[0] & 0x6700) != 0x6700) {
+	if ((sbuf[0] & 0xFFF0) != 0x6700) {
 		printf("No manufacturer data present.  Magic %04x did not match 0x670x.\n", sbuf[0]);
 		return 0;
 	}
